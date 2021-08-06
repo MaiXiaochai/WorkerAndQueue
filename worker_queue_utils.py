@@ -28,15 +28,18 @@ class CloseableQueue(Queue):
         while True:
             # 因为queue.get会持续阻塞，所以，在流程中并不会造成CPU时间的浪费
             item = self.get()
+
+            # 这里用 try... finally...的写法是利用了即使 try中 return执行，finally中的语句也会执行、
+            # 并且是在return返回结果之前执行的特性。
+            # 这样，每次从queue中取出任务后，都会给queue发一个task_done的提示
             try:
                 if item is self.SENTINEL:
                     return  # 让线程退出
 
                 yield item
 
-            # TODO: try... finally的特性已了解，但这里为什么要这么用暂时还不清楚
             finally:
-                self.task_done()
+                self.task_done()  # 给queue发送信号，停止阻塞
 
 
 class StoppableWorker(Thread):
@@ -49,14 +52,11 @@ class StoppableWorker(Thread):
         self.func = func
         self.in_queue = in_queue
         self.out_queue = out_queue
-        self.lock = Lock()
 
     def run(self):
-        # todo: 为什么这里不用锁 —— with lock: ...
         for item in self.in_queue:
-            with self.lock:
-                result = self.func(item)
-                self.out_queue.put(result)
+            result = self.func(item)
+            self.out_queue.put(result)
 
 
 def start_threads(count, *args):
