@@ -43,11 +43,10 @@ def main():
     download_queue = CloseableQueue()
     resize_queue = CloseableQueue()
     upload_queue = CloseableQueue()
-    done_queue = CloseableQueue()
 
     download_threads = start_threads(3, download, download_queue, resize_queue)
     resize_threads = start_threads(4, resize, resize_queue, upload_queue)
-    upload_threads = start_threads(5, upload, upload_queue, done_queue)
+    upload_threads = start_threads(5, upload, upload_queue)
 
     for i in range(100):
         download_queue.put(i)
@@ -55,8 +54,6 @@ def main():
     stop_thread(download_queue, download_threads)
     stop_thread(resize_queue, resize_threads)
     stop_thread(upload_queue, upload_threads)
-
-    print("完成：", done_queue.qsize())
 
 
 if __name__ == '__main__':
