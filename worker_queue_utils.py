@@ -47,7 +47,7 @@ class StoppableWorker(Thread):
         比较高级的 Worker
     """
 
-    def __init__(self, func, in_queue, out_queue):
+    def __init__(self, func, in_queue, out_queue=None):
         super().__init__()
         self.func = func
         self.in_queue = in_queue
@@ -56,7 +56,9 @@ class StoppableWorker(Thread):
     def run(self):
         for item in self.in_queue:
             result = self.func(item)
-            self.out_queue.put(result)
+
+            if self.out_queue and result:
+                self.out_queue.put(result)
 
 
 def start_threads(count, *args):
