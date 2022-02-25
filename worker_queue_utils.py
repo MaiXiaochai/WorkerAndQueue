@@ -10,7 +10,7 @@
 原作者代码：https://github.com/bslatkin/effectivepython/blob/master/example_code/item_55.py
 """
 from queue import Queue
-from threading import Thread, Lock
+from threading import Thread
 
 
 class CloseableQueue(Queue):
