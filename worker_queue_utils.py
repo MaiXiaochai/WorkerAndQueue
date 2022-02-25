@@ -19,21 +19,21 @@ class CloseableQueue(Queue):
         Tips:
             Queue.get()会持续阻塞，直到队列中 put数据才返回
     """
-    SENTINEL = object()
+    sentinel = object()
 
     def close(self):
-        self.put(self.SENTINEL)
+        self.put(self.sentinel)
 
     def __iter__(self):
         while True:
             # 因为queue.get会持续阻塞，所以，在流程中并不会造成CPU时间的浪费
             item = self.get()
 
-            # 这里用 try... finally...的写法是利用了即使 try中 return执行，finally中的语句也会执行、
+            # 这里用 try... finally...的写法是利用了即使 try中 return执行，finally中的语句也会执行
             # 并且是在return返回结果之前执行的特性。
             # 这样，每次从queue中取出任务后，都会给queue发一个task_done的提示
             try:
-                if item is self.SENTINEL:
+                if item is self.sentinel:
                     return  # 让线程退出
 
                 yield item

@@ -56,5 +56,19 @@ def main():
     stop_thread(upload_queue, upload_threads)
 
 
+def demo_test():
+    a = object()
+    b = object()
+    print(f"id_a: {id(a)}\nid_b: {id(b)}\n")
+    print(f"id_a == id_b: {id(a) == id(b)}")
+
+    """
+    out:
+        id_a: 2245875696928
+        id_b: 2245875696944
+        id_a == id_b: False
+    """
+
+
 if __name__ == '__main__':
     main()
