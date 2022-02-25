@@ -39,7 +39,7 @@ class CloseableQueue(Queue):
                 yield item
 
             finally:
-                self.task_done()  # 给queue发送信号，停止阻塞
+                self.task_done()  # 给queue发送信号，告诉 队列我已经拿到数据，可以停止“等待我的回信”（阻塞）
 
 
 class StoppableWorker(Thread):
